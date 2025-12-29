@@ -3,39 +3,66 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
-    <input matInput formControlName="name" placeholder="Name">
+    <input matInput [errorStateMatcher]="matcher" formControlName="name" placeholder="Name" />
+
+    @if (signupForm.get("name")?.hasError("required")) {
+    <mat-error>Bitte Name eingeben</mat-error>
+    } @if (signupForm.get('name')?.dirty && signupForm.get('name')?.hasError('minlength')) {
+    <mat-error>Name muss mindestens 2 Zeichen haben</mat-error>
+    } @if (signupForm.get('name')?.dirty && signupForm.get('name')?.hasError('maxlength')) {
+    <mat-error>Name darf höchstens 50 Zeichen haben</mat-error>
+    }
   </mat-form-field>
-  <br>
+  <br />
 
   <mat-form-field appearance="fill">
     <mat-label>Geburtsdatum</mat-label>
-    <input matInput [matDatepicker]="birthdayDatepicker" formControlName="birthdate" placeholder="Geburtsdatum">
+    <input
+      matInput
+      [matDatepicker]="birthdayDatepicker"
+      formControlName="birthdate"
+      placeholder="Geburtsdatum"
+    />
     <mat-datepicker-toggle matSuffix [for]="birthdayDatepicker"></mat-datepicker-toggle>
     <mat-datepicker #birthdayDatepicker></mat-datepicker>
+
+    @if (signupForm.get("birthdate")?.hasError("required")) {
+    <mat-error>Bitte Geburtstag eingeben</mat-error>
+    }
   </mat-form-field>
-  <br>
-  
+  <br />
+
   <mat-form-field appearance="fill">
     <mat-label>Kursauswahl</mat-label>
     <mat-select formControlName="courseId">
       <mat-option value="" disabled>Bitte auswählen</mat-option>
       @for (course of store.courses; track $index) {
-        <mat-option [value]="course.id">
-          {{ course.name }}
-        </mat-option>
+      <mat-option [value]="course.id">
+        {{ course.name }}
+      </mat-option>
       }
     </mat-select>
-  </mat-form-field>
-  <br>
 
-  <mat-checkbox formControlName="newsletter">
-    Newsletter erhalten
-  </mat-checkbox>
+    @if (signupForm.get("courseId")?.hasError("required")) {
+    <mat-error>Bitte einen Kurs wählen</mat-error>
+    }
+  </mat-form-field>
+  <br />
+
+  <mat-checkbox formControlName="newsletter"> Newsletter erhalten </mat-checkbox>
   <mat-form-field appearance="fill">
     <mat-label>E-Mail</mat-label>
-    <input matInput type="email" formControlName="email" placeholder="E-Mail">
-  </mat-form-field>
-  <br>
+    <input matInput type="email" formControlName="email" placeholder="E-Mail" />
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid">Erfassen</button>
+    @if (signupForm.get("email")?.hasError("required")) {
+    <mat-error>Bitte Email Adresse eingeben</mat-error>
+    } @if (signupForm.get("email")?.hasError("email")) {
+    <mat-error>Email ungültig</mat-error>
+    }
+  </mat-form-field>
+  <br />
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid">
+    Erfassen
+  </button>
 </form>

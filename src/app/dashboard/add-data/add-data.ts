@@ -1,27 +1,52 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Store } from '../../shared/store';
 import { Backend } from '../../shared/backend';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInputModule }      from '@angular/material/input';
-import { MatSelect, MatOption }     from '@angular/material/select';
-import { MatCheckbox }   from '@angular/material/checkbox';
-import { MatDatepickerModule, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatAnchor }     from '@angular/material/button';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatDatepickerModule,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { ErrorStateMatcher, MatNativeDateModule } from '@angular/material/core';
+import { MatAnchor } from '@angular/material/button';
+
+export class InstantErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return !!(control && control.invalid && control.dirty);
+  }
+}
 
 @Component({
   selector: 'app-add-data',
   standalone: true,
-  imports: [ReactiveFormsModule,
+  imports: [
+    ReactiveFormsModule,
     MatFormField,
     MatLabel,
     MatInputModule,
     MatDatepickerInput,
     MatDatepickerToggle,
-    MatDatepicker,
     MatDatepickerModule,
-    MatNativeDateModule, MatSelect, MatOption, MatCheckbox, MatAnchor],
+    MatNativeDateModule,
+    MatSelect,
+    MatOption,
+    MatCheckbox,
+    MatAnchor,
+    MatError,
+  ],
   templateUrl: './add-data.html',
   styleUrl: './add-data.scss',
 })
@@ -29,15 +54,16 @@ export class AddData {
   public store = inject(Store);
   public backend = inject(Backend);
   private fb = inject(FormBuilder);
-  public signupForm: any;
+  public signupForm!: FormGroup;
+  matcher = new InstantErrorStateMatcher();
 
   ngOnInit() {
     this.signupForm = this.fb.group({
-      name: ['', Validators.required],
-      birthdate: ['', Validators.required],
-      courseId: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      birthdate: ['', [Validators.required]],
+      courseId: ['', [Validators.required]],
       newsletter: [false],
-      email: [{ value: '', disabled: true}, [Validators.email]]
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
     });
 
     this.signupForm.get('newsletter')?.valueChanges.subscribe((isChecked: boolean) => {
@@ -48,7 +74,7 @@ export class AddData {
         emailControl?.disable();
         emailControl?.reset();
       }
-    })
+    });
   }
 
   onSubmit() {
