@@ -1,50 +1,54 @@
-<h1>Alle Kurse</h1>
-<table>
-  <tr>
-    <th>Kurs</th>
-    <th>Veranstaltungsort</th>
-    <th>Adresse des Veranstaltungsortes</th>
-    <th>Öffentlich erreichbar?</th>
-    <th>Kursleiter</th>
-    <th>Alle Termine</th>
-  </tr>
-  @for(course of store.courses; track $index) {
-  <tr>
-    <td>{{ course.name }}</td>
-    <td>{{ course.eventLocation.name }}</td>
-    <td>{{ course.eventLocation.address }}</td>
-    <td>{{ course.eventLocation.venueByPublicTansport == true ? 'Ja' : 'Nein' }}</td>
-    <td>{{ course.instructor }}</td>
-    <td>
-      <ul>
-        @for(date of course.dates; track $index) {
-        <li>
-          <span>{{ date.begin | date : "MMM dd, yyyy 'um' hh:mm a" }}</span> -
-          <span>{{ date.end | date : "MMM dd, yyyy 'um' hh:mm a" }}</span>
-        </li>
-        }
-      </ul>
-    </td>
-  </tr>
-  }
-</table>
+<div class="grid-container">
+  <div class="grid-content">
+    <h1>Alle Kurse</h1>
+    <table>
+      <tr class="grid-row">
+        <th>Kurs</th>
+        <th>Veranstaltungsort</th>
+        <th>Adresse des Veranstaltungsortes</th>
+        <th>Öffentlich erreichbar?</th>
+        <th>Kursleiter</th>
+        <th>Alle Termine</th>
+      </tr>
+      @for(course of store.courses; track $index) {
+      <tr class="grid-row">
+        <td>{{ course.name }}</td>
+        <td>{{ course.eventLocation.name }}</td>
+        <td>{{ course.eventLocation.address }}</td>
+        <td>{{ course.eventLocation.venueByPublicTansport == true ? 'Ja' : 'Nein' }}</td>
+        <td>{{ course.instructor }}</td>
+        <td>
+          <ul>
+            @for(date of course.dates; track $index) {
+            <li>
+              <span>{{ date.begin | date : "MMM dd, yyyy 'um' hh:mm a" }}</span> -
+              <span>{{ date.end | date : "MMM dd, yyyy 'um' hh:mm a" }}</span>
+            </li>
+            }
+          </ul>
+        </td>
+      </tr>
+      }
+    </table>
 
-<h1>Alle Anmeldungen</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Geburtsdatum</th>
-      <th>Kurs</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for(registration of store.registrations; track $index) {
-    <tr>
-      <td>{{ registration.name }}</td>
-      <td>{{ registration.birthdate }}</td>
-      <td>{{ registration.course?.name }}</td>
-    </tr>
-    }
-  </tbody>
-</table>
+    <h1>Alle Anmeldungen</h1>
+    <table>
+      <thead>
+        <tr class="grid-row">
+          <th>Name</th>
+          <th>Geburtsdatum</th>
+          <th>Kurs</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(registration of store.registrations; track $index) {
+        <tr class="grid-row">
+          <td>{{ registration.name }}</td>
+          <td>{{ registration.birthdate }}</td>
+          <td>{{ registration.course?.name }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
